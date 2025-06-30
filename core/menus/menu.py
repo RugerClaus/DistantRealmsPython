@@ -9,6 +9,7 @@ class Menu:
         self.screen = screen
         self.start_callback = start_callback
         self.load_menu_callback = load_menu_callback
+        self.multiplayer_callback = None
         self.quit_callback = quit_callback
 
         # Load static assets
@@ -45,7 +46,7 @@ class Menu:
     def create_buttons(self):
         self.buttons = []
         screen_w, screen_h = self.screen.get_size()
-        btn_width, btn_height = screen_w // 10, screen_h // 20
+        btn_width, btn_height = screen_w // 10, 70
         spacing = btn_height * 1.2
         start_y = screen_h // 4 + screen_h // 7
 
@@ -54,6 +55,7 @@ class Menu:
         self.buttons = [
             Button("Start", center_x, start_y, btn_width + 80, btn_height, (255, 255, 255), (128,0,200), self.start_callback),
             Button("Load", center_x, start_y + spacing * 1, btn_width + 80, btn_height, (255, 255, 255), (128,0,200), self.load_menu_callback),
+            Button("Multiplayer", center_x, start_y + spacing * 2, btn_width * 2, btn_height, (255, 255, 255), (128, 128, 128), self.multiplayer_callback),
             Button("Quit", center_x, start_y + spacing * 3, btn_width, btn_height, (255, 255, 255), (255, 0, 80), self.quit_callback),
         ]
 

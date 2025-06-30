@@ -12,12 +12,8 @@ class FontEngine():
             self.ui_font()
         elif self.type == "GameOver":
             self.game_over_font()
-        elif self.type == "back":
-            self.go_back_font()
-        elif self.type == "tutorial":
-            self.tutorial_font()
-        elif self.type == "reducer":
-            self.reducer_font()
+        elif self.type == "keypress":
+            self.key_press_font()
         else:
             self.default_font()
 
@@ -28,15 +24,7 @@ class FontEngine():
         self.font = pygame.font.SysFont('Arial', 40)
     def game_over_font(self):
         self.font = pygame.font.Font(asset("default_font"), 120)
-    
-    def go_back_font(self):
-        self.font = pygame.font.Font(asset("default_font"), 60)
-
-    def tutorial_font(self):
-        self.font = pygame.font.Font(asset("default_font"), 60)
-
-    def reducer_font(self):
-        self.font = pygame.font.Font(asset("default_font"), 40)
-
+    def key_press_font(self):
+        self.font = pygame.font.Font(asset("default_font"), 200)
     def default_font(self):
         self.font = pygame.font.Font(asset("default_font"), 25)

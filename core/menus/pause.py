@@ -3,11 +3,12 @@ import pygame
 from core.ui.button import Button
 
 class Pause:
-    def __init__(self,window,resume_callback,menu_callback,quit_callback):
+    def __init__(self,window,resume_callback,menu_callback,quit_callback,reset_game_callback):
         self.window = window
         self.resume_callback = resume_callback
         self.menu_callback = menu_callback
         self.quit_callback = quit_callback
+        self.reset_game_callback = reset_game_callback
         self.create_buttons()
 
     def create_buttons(self):
@@ -22,6 +23,7 @@ class Pause:
         self.buttons = [
             Button("Resume", center_x, start_y, btn_width, btn_height, (255, 255, 255), (128,0,200), self.resume_callback),
             Button("Main Menu",center_x,start_y + spacing * 1,btn_width,btn_height,(255,255,255),(128,0,200),self.menu_callback),
+            Button("Reset Game",center_x,start_y + spacing * 2,btn_width,btn_height,(255,255,255),(128,0,200),self.reset_game_callback),
             Button("Quit", center_x, start_y + spacing * 3, btn_width, btn_height, (255, 255, 255), (128,0,200), self.quit_callback),
         ]
 
@@ -41,6 +43,7 @@ class Pause:
         pass
 
     def draw(self):
+        self.window.draw_overlay((0,0,255),30)
         mouse_pos = pygame.mouse.get_pos()
         for button in self.buttons:
-            button.draw(self.window.get_screen(),mouse_pos)
+            button.draw(self.window.get_screen(), mouse_pos)

@@ -1,9 +1,12 @@
 import pygame
+
+from helper import get_colors
+
 class Window:
     def __init__(self):
         pygame.init()
-        self.default_width = 1200
-        self.default_height = 800
+        self.default_width = 1600
+        self.default_height = 1200
         self.color = (255,0,0)
         self.width = self.default_width
         self.height = self.default_height
@@ -12,7 +15,13 @@ class Window:
         self.set_screen()
         
     def set_screen(self):
-        self.screen = pygame.display.set_mode((self.width,self.height),pygame.RESIZABLE | pygame.SCALED)
+        self.screen = pygame.display.set_mode((self.width,self.height),pygame.RESIZABLE)
+    
+    def get_width(self):
+        return self.screen.get_width()
+    
+    def get_height(self):
+        return self.screen.get_height()
     
     def handle_resize(self,e):
         if e.type == pygame.VIDEORESIZE:
@@ -25,9 +34,20 @@ class Window:
     def default_fill(self):
         self.screen.fill(self.color)
 
-    def fill(self,r,g,b):
-        self.screen.fill((r,g,b))
-    
+    def fill(self, color):
+        if isinstance(color, str):
+            color = get_colors(color.lower())
+
+        if isinstance(color, tuple) and len(color) == 3:
+            self.screen.fill(color)
+        else:
+            raise ValueError("fill() only supports RGB tuples or color strings")
+
+    def draw_overlay(self, color, alpha):
+        overlay = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+        overlay.fill((*color, alpha))
+        self.screen.blit(overlay, (0, 0))
+
     def blit(self,surface,destination):
         self.screen.blit(surface,destination)
 

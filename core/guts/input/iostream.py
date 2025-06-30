@@ -5,6 +5,9 @@ class IOSTREAM:
         self.sequences = {
             "debug": [pygame.K_d, pygame.K_e, pygame.K_b, pygame.K_u, pygame.K_g],
             "secret": [pygame.K_s, pygame.K_e, pygame.K_c, pygame.K_r, pygame.K_e, pygame.K_t],
+            "fuck": [pygame.K_f,pygame.K_u,pygame.K_c,pygame.K_k],
+            "musicon": [pygame.K_m,pygame.K_u,pygame.K_s,pygame.K_i,pygame.K_c,pygame.K_o,pygame.K_n],
+            "musicoff": [pygame.K_m,pygame.K_u,pygame.K_s,pygame.K_i,pygame.K_c,pygame.K_o,pygame.K_f,pygame.K_f],
         }
         self.buffer = []
         self.buffer_timer = 0
