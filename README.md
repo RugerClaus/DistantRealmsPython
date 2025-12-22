@@ -46,3 +46,11 @@ of the raycaster engine, and entity system</p>
 <p>added sprinting, experimenting with gun sprites. The sprite that's there is a dummy for now and doesn't look right yet. I just don't
 want to work on it more for this commit. regardless, eventually i'm going to need to figure out how to add enemies, and make the gun shoot.
 The latter, I can probably do easily, but the former? oof not there yet, but soon</p>
+
+
+<p>Made the raycaster library isolated in its own directory with its own game class so you can just edit it from that location.</p>
+<p>Any changes there will not have any effect on the greater shell of the application. I will modularize it to let you create the game.</p>
+<p>I want to make it so when you start the program, it prompts you to create a game with a type upon first start up. Then once you have at least a single saved project, it will ask you if you want to start a new one or load a saved project.</p>
+<p>Eventually this entire thing will be an actual game engine where eventually you'll be able to export an executable. I'll have to work out how that works, but I think pyinstaller would be a good method unless I can make a custom packaging system. That way we can get the most efficient and quickest binaries.</p>
+<p>At this point, I think i'm safe to integrate this into the engine base branch. The kotor thing was a dumb idea, but i've just built the engine up more. I have made several improvements on the SnowBlitzBeta branch of <b>rugerclaus/DistantRealmsPython</b> and will be integrating the core engine improvements into the main branch.</p>
+<p>Those changes will not be able to be directly merged, and frankly I should start a whole new repo for Snow Blitz Beta. But the changes I made were very important.</p>
