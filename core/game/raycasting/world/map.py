@@ -1,5 +1,5 @@
 import pygame
-from core.game.raycaster.settings import *
+from core.game.raycasting.raycaster.settings import *
 
 class Map:
     def __init__(self,player):

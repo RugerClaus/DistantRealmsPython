@@ -8,10 +8,10 @@ from core.menus.pause import Pause
 
 #this is for an imported game with a raycasting engine
 #you'll see it's fairly easy to just drop pygame projects right in and tie them to everything else.
-from core.game.entities.player.player import Player
-from core.game.world.map import Map
-from core.game.raycaster.raycaster import Raycaster
-from core.game.raycaster.settings import WINDOW_WIDTH,WINDOW_HEIGHT
+from core.game.raycasting.entities.player.player import Player
+from core.game.raycasting.world.map import Map
+from core.game.raycasting.raycaster.raycaster import Raycaster
+from core.game.raycasting.raycaster.settings import WINDOW_WIDTH,WINDOW_HEIGHT
 from helper import asset
 
 class Game:

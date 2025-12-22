@@ -1,6 +1,6 @@
 import pygame,math
-from core.game.raycaster.settings import *
-from core.game.raycaster.ray import Ray
+from core.game.raycasting.raycaster.settings import *
+from core.game.raycasting.raycaster.ray import Ray
 
 class Raycaster:
     def __init__(self,player,map):

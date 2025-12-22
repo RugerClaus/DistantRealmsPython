@@ -1,7 +1,7 @@
 import math,pygame
 import helper
-from core.game.raycaster.settings import *
-from core.game.entities.entity import Entity
+from core.game.raycasting.raycaster.settings import *
+from core.game.raycasting.entities.entity import Entity
 from core.state.GameLayer.Entities.Player.Intent.state import PLAYER_INTENT_STATE
 from core.state.GameLayer.Entities.Player.Movement.Move.statemanager import PlayerMoveStateManager
 from core.state.GameLayer.Entities.Player.Movement.Turn.statemanager import PlayerTurnStateManager

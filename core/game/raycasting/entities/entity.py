@@ -1,6 +1,6 @@
 import math
 from random import randint
-from core.game.raycaster.settings import COLS,ROWS,TILE_SIZE
+from core.game.raycasting.raycaster.settings import COLS,ROWS,TILE_SIZE
 
 class Entity:
     def __init__(self, x, y, radius=6, speed=0):

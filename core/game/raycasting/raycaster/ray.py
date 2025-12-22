@@ -1,5 +1,5 @@
 import math,pygame
-from core.game.raycaster.settings import *
+from core.game.raycasting.raycaster.settings import *
 
 def normalize_angle(angle):
     angle = angle % (2 * math.pi)

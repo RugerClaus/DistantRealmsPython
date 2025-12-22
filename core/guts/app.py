@@ -5,7 +5,7 @@ from core.state.ApplicationLayer.mode import APPMODE
 from core.state.ApplicationLayer.modemanager import ModeManager
 from core.util.debugger import Debugger
 from core.guts.input.inputmanager import InputManager
-from core.game.game import Game
+from core.game.raycasting.game import Game
 from core.mapeditor.mapeditor import TileMapEditor
 from core.menus.menu import Menu
 from core.guts.audioengine import AudioEngine
