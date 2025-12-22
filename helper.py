@@ -8,6 +8,12 @@ def asset(asset):
         return "assets/images/main/title.png"
     elif asset == "default_font":
         return 'assets/font/Pixeltype.ttf'
+    elif asset == "background":
+        return "assets/images/raycasted/stars.png"
+    elif asset == "gunnoshot":
+        return "assets/images/raycasted/gunnoshot.png"
+    elif asset == "gunshot":
+        return "assets/images/raycasted/gunshot.png"
     
 def asset_frames(prefix, count, ext="png", folder="menu_bg"):
     frames = []
@@ -53,8 +59,11 @@ def get_colors(color):
         return (128,128,128)
     
 def audio_path(type):
-    type.lower()
+    type = type.lower()
     if type == "music":
         return f"assets/sounds/music"
     elif type == "sfx":
         return f"assets/sounds/sfx"
+    else:
+        print("Can't find audio path!")
+        return None

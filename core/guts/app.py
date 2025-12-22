@@ -5,7 +5,7 @@ from core.state.ApplicationLayer.mode import APPMODE
 from core.state.ApplicationLayer.modemanager import ModeManager
 from core.util.debugger import Debugger
 from core.guts.input.inputmanager import InputManager
-from core.game.game import Game
+from core.game.raycasting.game import Game
 from core.mapeditor.mapeditor import TileMapEditor
 from core.menus.menu import Menu
 from core.guts.audioengine import AudioEngine
@@ -23,8 +23,6 @@ class App:
         self.game = Game(window,self.sound,self.go_to_menu,self.quit)
         self.map_editor = TileMapEditor(window,self.sound,self.go_to_menu,self.quit)
         self.debugger = Debugger(self.game,self.map_editor,self.state,window,self.sound)
-        
-        self.sound.start_music()
 
     def _popup_test_toggle(self):
         self.popup_active = not self.popup_active
@@ -54,7 +52,7 @@ class App:
                 self.state.set_app_state(APPSTATE.QUIT)
             
             if self.state.is_app_state(APPSTATE.MAIN_MENU):
-                self.menu.handle_event(event,AudioEngine(self.app_volume))
+                self.menu.handle_event(event,self.sound.volume)
 
             elif self.state.is_app_state(APPSTATE.IN_GAME):
                 self.game.handle_event(event,self.input)
@@ -82,10 +80,10 @@ class App:
             # by itself.
             elif command == "musicon":
                 
-                self.sound.start_music()
+                self.sound.play_music()
             
             elif command == "musicoff":
-                self.sound.stop_music()
+                self.sound.play_music('stop')
                 
     
     def run(self):
