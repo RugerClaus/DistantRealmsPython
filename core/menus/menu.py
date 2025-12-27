@@ -1,42 +1,32 @@
 import pygame
 import math
+from core.menus.basemenu import BaseMenu
 from core.ui.button import Button
-from core.guts.animations import Animation
 from helper import *
+from core.state.ApplicationLayer.Menu.state import MENUSTATE
+from core.state.ApplicationLayer.Menu.statemanager import MenuStateManager
 
-class Menu:
-    def __init__(self, screen, start_callback, map_editor_callback, quit_callback):
+class Menu(BaseMenu):
+    def __init__(self, screen, sound, start_callback, map_editor_callback, quit_callback):
         self.screen = screen
+        self.sound = sound
+
+        super().__init__(screen, sound)
         self.start_callback = start_callback
         self.map_editor_callback = map_editor_callback
         self.multiplayer_callback = None
         self.quit_callback = quit_callback
+        self.state = MenuStateManager()
 
-        # Load static assets
         self.title_image_original = pygame.image.load(asset("title")).convert_alpha()
-        self.bg_frames_original = asset_frames("frame",14)
-
-        # Initialize UI
         self.title_image = self.title_image_original
         self.title_rect = self.title_image.get_rect()
-        self.bg_frames = []
 
-        # Set up background and buttons
-        self.rescale_assets()
-        self.background_animation = Animation(self.bg_frames, frame_delay=3)
-        self.buttons = []
         self.create_buttons()
+        self.rescale_assets()
 
     def rescale_assets(self):
         screen_w, screen_h = self.screen.get_size()
-
-        # Rescale background frames from originals
-        self.bg_frames = [
-            pygame.transform.scale(frame, (screen_w, screen_h))
-            for frame in self.bg_frames_original
-        ]
-
-        # Rescale title image to half screen width and center it
         new_title_width = int(screen_w * 0.5)
         scale_factor = new_title_width / self.title_image_original.get_width()
         new_title_height = int(self.title_image_original.get_height() * scale_factor)
@@ -44,37 +34,47 @@ class Menu:
         self.title_rect = self.title_image.get_rect(center=(screen_w // 2, int(screen_h * 0.2)))
 
     def create_buttons(self):
-        self.buttons = []
         screen_w, screen_h = self.screen.get_size()
-        btn_width, btn_height = screen_w // 6, 70
+        btn_width, btn_height = screen_w // 4.5, 70
         spacing = btn_height * 1.2
         start_y = screen_h // 4 + screen_h // 7
-
         center_x = screen_w // 2
-        unavailable_color = (128,128,150)
-        self.buttons = [
-            Button("Start", center_x, start_y, btn_width + 80, btn_height, (255, 255, 255), (128,0,200), self.start_callback),
-            Button("Map Editor", center_x, start_y + spacing * 1, btn_width + 80, btn_height, (255, 255, 255), (128,0,200), self.map_editor_callback),
-            Button("Multiplayer", center_x, start_y + spacing * 2, btn_width * 2, btn_height, (255, 255, 255), (128, 128, 128), self.multiplayer_callback),
-            Button("Quit", center_x, start_y + spacing * 3, btn_width, btn_height, (255, 255, 255), (255, 0, 80), self.quit_callback),
-        ]
 
-    def handle_event(self, event,sound_engine):
+        if self.state.is_state(MENUSTATE.ROOT):
+            self.buttons = [
+                Button("Start", center_x, start_y, btn_width + 80, btn_height, (255, 255, 255), (128,0,200), self.start_callback),
+                Button("Map Editor", center_x, start_y + spacing * 1, btn_width + 80, btn_height, (255, 255, 255), (128,0,200), self.map_editor_callback),
+                Button("Settings", center_x, start_y + spacing * 2, btn_width + 80, btn_height, (255, 255, 255), (128,0,200), self.go_to_settings),
+                Button("Quit", center_x, start_y + spacing * 3, btn_width, btn_height, (255, 255, 255), (255, 0, 80), self.quit_callback),
+            ]
+        elif self.state.is_state(MENUSTATE.SETTINGS):
+            self.buttons = [
+                Button(f"Music: {'On' if self.sound.music_active else 'Off'}", center_x, start_y, btn_width, btn_height,
+                    (255, 255, 255), (128, 0, 200), self.sound.toggle_music),
+                Button("Back", center_x, start_y + spacing * 1, btn_width, btn_height,
+                    (255, 255, 255), (255, 0, 80), self.back_to_root),
+            ]
+
+
+    def back_to_root(self):
+        self.state.set_state(MENUSTATE.ROOT)
+        self.create_buttons()
+    
+    def go_to_settings(self):
+        self.state.set_state(MENUSTATE.SETTINGS)
+        self.create_buttons()
+
+    def handle_event(self, event, sound_engine):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
             for button in self.buttons:
                 button.is_clicked(mouse_pos, True)
-
         elif event.type == pygame.VIDEORESIZE:
-            self.on_resize()
+            self.scale()
 
-    def on_resize(self):
+    def scale(self):
         self.rescale_assets()
         self.create_buttons()
-        self.background_animation.frames = self.bg_frames
-
-    def update(self):
-        self.background_animation.update()
 
     def draw(self):
         t = pygame.time.get_ticks() / 1000
@@ -85,10 +85,7 @@ class Menu:
             int(20 + (35 - 20) * pulse)
         )
         self.screen.fill(fade_color)
-
-        self.screen.blit(self.background_animation.get_current_frame(), (0, 0))
         self.screen.blit(self.title_image, self.title_rect)
-
         mouse_pos = pygame.mouse.get_pos()
         for button in self.buttons:
             button.draw(self.screen, mouse_pos)

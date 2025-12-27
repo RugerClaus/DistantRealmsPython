@@ -8,7 +8,7 @@ class TileMapEditor:
         self.state = TileEditorMasterStateManager()
         self.window = window
         self.surface = window.make_surface(window.get_screen().get_width(), window.get_screen().get_height(), True)
-        self.pause_menu = Pause(window,self.toggle_pause,self.quit_to_menu,self.quit,None)
+        self.pause_menu = Pause(window,None,sound,self.toggle_pause,self.quit_to_menu,self.quit,None)
         self.sound = sound
         self.menu_callback = menu_callback
         self.quit_callback = quit_callback

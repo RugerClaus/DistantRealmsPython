@@ -24,7 +24,7 @@ class Game:
         self.sound = sound
         self.menu_callback = menu_callback
         self.quit_callback = quit_callback
-        self.pause_menu = Pause(window,self.toggle_pause,self.quit_to_menu,self.quit,self.reset)
+        self.pause_menu = Pause(window,self,self.sound, self.toggle_pause,self.quit_to_menu,self.quit,self.reset)
         self.intent = None
         self.surface.fill('red')
 

@@ -19,7 +19,7 @@ class App:
         self.mode = ModeManager()
         self.app_volume = 0.5
         self.sound = AudioEngine(self.app_volume)
-        self.menu = Menu(window.get_screen(),self.start_game,self.start_map_editor,self.quit)
+        self.menu = Menu(window.get_screen(),self.sound,self.start_game,self.start_map_editor,self.quit)
         self.game = Game(window,self.sound,self.go_to_menu,self.quit)
         self.map_editor = TileMapEditor(window,self.sound,self.go_to_menu,self.quit)
         self.debugger = Debugger(self.game,self.map_editor,self.state,window,self.sound)
@@ -28,39 +28,35 @@ class App:
         self.popup_active = not self.popup_active
 
     def start_game(self):
-        self.state.set_app_state(APPSTATE.IN_GAME)
+        self.state.set_state(APPSTATE.IN_GAME)
 
     def start_map_editor(self):
-        self.state.set_app_state(APPSTATE.MAP_EDITOR)
+        self.state.set_state(APPSTATE.MAP_EDITOR)
 
     def toggle_debug_mode(self):
-        if not self.mode.is_mode(APPMODE.DEBUG):
-            self.mode.set_mode(APPMODE.DEBUG)
+        if not self.mode.is_state(APPMODE.DEBUG):
+            self.mode.set_state(APPMODE.DEBUG)
         else:
-            self.mode.set_mode(APPMODE.PRIMARY)
+            self.mode.set_state(APPMODE.PRIMARY)
     def quit(self):
-        self.state.set_app_state(APPSTATE.QUIT)
+        self.state.set_state(APPSTATE.QUIT)
 
     def go_to_menu(self):
-        self.state.set_app_state(APPSTATE.MAIN_MENU)
+        self.state.set_state(APPSTATE.MAIN_MENU)
     
     def handle_events(self):
         for event in pygame.event.get():
-            self.window.handle_resize(event)
 
             if event.type == pygame.QUIT:
-                self.state.set_app_state(APPSTATE.QUIT)
+                self.state.set_state(APPSTATE.QUIT)
             
-            if self.state.is_app_state(APPSTATE.MAIN_MENU):
-                self.menu.handle_event(event,self.sound.volume)
+            if self.state.is_state(APPSTATE.MAIN_MENU):
+                self.menu.handle_event(event,self.sound)
 
-            elif self.state.is_app_state(APPSTATE.IN_GAME):
+            elif self.state.is_state(APPSTATE.IN_GAME):
                 self.game.handle_event(event,self.input)
             
-            elif self.state.is_app_state(APPSTATE.MAP_EDITOR):
-                self.map_editor.handle_event(event,self.input)
-            
-            if self.mode.is_mode(APPMODE.DEBUG):
+            if self.mode.is_state(APPMODE.DEBUG):
                 self.debugger.handle_event(event)
 
             command = self.input.handle_event(event)
@@ -87,24 +83,24 @@ class App:
                 
     
     def run(self):
-        while not self.state.is_app_state(APPSTATE.QUIT):
+        while not self.state.is_state(APPSTATE.QUIT):
             self.window.fill((0,0,0))
             self.handle_events()
             
             
-            if self.state.is_app_state(APPSTATE.MAIN_MENU):
+            if self.state.is_state(APPSTATE.MAIN_MENU):
                 self.menu.update()
                 self.menu.draw()
-            elif self.state.is_app_state(APPSTATE.IN_GAME):
+            elif self.state.is_state(APPSTATE.IN_GAME):
                 self.game.run()
-            elif self.state.is_app_state(APPSTATE.MAP_EDITOR):
+            elif self.state.is_state(APPSTATE.MAP_EDITOR):
                 self.map_editor.update()
                 self.map_editor.draw()
-            elif self.state.is_app_state(APPSTATE.QUIT):
+            elif self.state.is_state(APPSTATE.QUIT):
                 pygame.quit()
                 sys.exit()
 
-            if self.mode.is_mode(APPMODE.DEBUG):
+            if self.mode.is_state(APPMODE.DEBUG):
                 self.debugger.update()
                 self.debugger.draw()
                 self.input.draw_most_recent_keypress()
