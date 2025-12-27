@@ -1,1 +1,5 @@
 {"timestamp": "2025-12-26T23:31:35.660265", "type": "MENUSTATE", "from": "MENUSTATE.ROOT", "to": "MENUSTATE.SETTINGS"}
+{"timestamp": "2025-12-26T23:40:51.711311", "type": "MENUSTATE", "from": "MENUSTATE.ROOT", "to": "MENUSTATE.SETTINGS"}
+{"timestamp": "2025-12-26T23:40:55.943548", "type": "MENUSTATE", "from": "MENUSTATE.SETTINGS", "to": "MENUSTATE.ROOT"}
+{"timestamp": "2025-12-26T23:40:58.306946", "type": "MENUSTATE", "from": "MENUSTATE.ROOT", "to": "MENUSTATE.SETTINGS"}
+{"timestamp": "2025-12-26T23:41:01.728185", "type": "MENUSTATE", "from": "MENUSTATE.SETTINGS", "to": "MENUSTATE.ROOT"}
