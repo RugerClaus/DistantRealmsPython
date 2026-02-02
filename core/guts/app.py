@@ -1,57 +1,69 @@
-import pygame, sys
+import sys
+from helper import *
 from core.state.ApplicationLayer.state import APPSTATE
 from core.state.ApplicationLayer.statemanager import StateManager
 from core.state.ApplicationLayer.mode import APPMODE
 from core.state.ApplicationLayer.modemanager import ModeManager
+from core.state.ApplicationLayer.dev import DEVELOPER_MODE
+from core.state.ApplicationLayer.devmanager import DevManager
 from core.util.debugger import Debugger
 from core.guts.input.inputmanager import InputManager
-from core.game.raycasting.game import Game
-from core.mapeditor.mapeditor import TileMapEditor
 from core.menus.menu import Menu
 from core.guts.audioengine import AudioEngine
+from core.loading.loadingmanager import LoadingManager
 
 class App:
     def __init__(self,window):
-
         self.window = window
         self.input = InputManager(window)
         self.state = StateManager()
         self.mode = ModeManager()
-        self.app_volume = 0.5
-        self.sound = AudioEngine(self.app_volume)
-        self.menu = Menu(window.get_screen(),self.sound,self.start_game,self.start_map_editor,self.quit)
-        self.game = Game(window,self.sound,self.go_to_menu,self.quit)
-        self.map_editor = TileMapEditor(window,self.sound,self.go_to_menu,self.quit)
-        self.debugger = Debugger(self.game,self.map_editor,self.state,window,self.sound)
+        self.dev = DevManager()
+        self.sound = AudioEngine()
+        self.menu = Menu(self.dev,window,self.sound,self.input,self.quit)
+        self.loading = LoadingManager(self.window,self.state,self.sound)
+        self.debugger = Debugger(None,self.state,window,self.sound,self.input,self.loading,self.dev)
 
     def _popup_test_toggle(self):
         self.popup_active = not self.popup_active
-
-    def start_game(self):
-        self.state.set_state(APPSTATE.IN_GAME)
-
-    def start_map_editor(self):
-        self.state.set_state(APPSTATE.MAP_EDITOR)
 
     def toggle_debug_mode(self):
         if not self.mode.is_state(APPMODE.DEBUG):
             self.mode.set_state(APPMODE.DEBUG)
         else:
             self.mode.set_state(APPMODE.PRIMARY)
+
+    def toggle_developer_mode(self):
+        if not self.dev.is_state(DEVELOPER_MODE.ON):
+            self.dev.set_state(DEVELOPER_MODE.ON)
+        else:
+            self.dev.set_state(DEVELOPER_MODE.OFF)
+
     def quit(self):
         self.state.set_state(APPSTATE.QUIT)
 
     def go_to_menu(self):
         self.state.set_state(APPSTATE.MAIN_MENU)
+        self.menu.scale()
     
     def handle_events(self):
-        for event in pygame.event.get():
+        for event in self.input.input_event():
+            if event.type == self.input.video_resize_event():
+                self.window.scale(event.w,event.h)
+                self.debugger.scale()
+                self.loading.rescale_assets()
+                self.menu.scale()
+                self.input.rescale(event.w,event.h)
+                if not self.state.is_state(APPSTATE.IN_GAME):
+                    self.game.resize(event.h)
+                    self.game.game_over_menu.create_buttons()
+                    self.game.pause_menu.create_buttons()
 
-            if event.type == pygame.QUIT:
+            if event.type == self.input.quit_event():
                 self.state.set_state(APPSTATE.QUIT)
             
             if self.state.is_state(APPSTATE.MAIN_MENU):
-                self.menu.handle_event(event,self.sound)
+                self.menu.handle_event(event)
 
             elif self.state.is_state(APPSTATE.IN_GAME):
                 self.game.handle_event(event,self.input)
@@ -59,51 +71,53 @@ class App:
             if self.mode.is_state(APPMODE.DEBUG):
                 self.debugger.handle_event(event)
 
+            self.sound.handle_music_event(event)
+
             command = self.input.handle_event(event)
             if command == "debug":
                 self.toggle_debug_mode()
-
-            # This one is a test for outputting data to the console via an in game command.
-            # Another feature of the input buffer (IOSTREAM ;^)
-            elif command == "secret":
-                print("Kiss me!")
-
-            # This one is just a test, but I'll probably implement an entire debug 
-            # menu. I'll write some functionality ideas here when I have them.
-            # ...
             
-            # And here is an actual practical use of this engine. It was very smooth to implement
-            # by itself.
-            elif command == "musicon":
-                
-                self.sound.play_music()
-            
-            elif command == "musicoff":
-                self.sound.play_music('stop')
-                
-    
+            elif command == "developer":
+                self.toggle_developer_mode()
+
+            if event.type == self.input.keydown():
+                if self.input.get_key_name(event.key) == "f11":
+                    self.window.toggle_fullscreen()
+                if self.input.get_key_name(event.key) == "u":
+                    print(read_constant_from_file('username'))
+                if self.state.is_state(APPSTATE.LOADING):
+                    if self.input.get_key_name(event.key) == "space" or self.input.get_key_name(event.key) == "return" or self.input.get_key_name(event.key) == "escape":
+                        self.state.set_state(APPSTATE.MAIN_MENU)
+                        self.sound.play_music()
+            if event.type == self.input.mouse_button_down() and event.button == 1:
+                if self.state.is_state(APPSTATE.LOADING):
+                    self.state.set_state(APPSTATE.MAIN_MENU)
+                    self.sound.play_music()
+
     def run(self):
         while not self.state.is_state(APPSTATE.QUIT):
             self.window.fill((0,0,0))
             self.handle_events()
+
+            if self.state.is_state(APPSTATE.LOADING):
+                self.loading.update()
+                self.loading.draw()
             
-            
-            if self.state.is_state(APPSTATE.MAIN_MENU):
+            elif self.state.is_state(APPSTATE.MAIN_MENU):
                 self.menu.update()
                 self.menu.draw()
             elif self.state.is_state(APPSTATE.IN_GAME):
                 self.game.run()
-            elif self.state.is_state(APPSTATE.MAP_EDITOR):
-                self.map_editor.update()
-                self.map_editor.draw()
             elif self.state.is_state(APPSTATE.QUIT):
-                pygame.quit()
+                self.window.quit()
                 sys.exit()
-
             if self.mode.is_state(APPMODE.DEBUG):
                 self.debugger.update()
                 self.debugger.draw()
                 self.input.draw_most_recent_keypress()
+            
+            if self.dev.is_state(DEVELOPER_MODE.ON):
+                pass
 
             self.window.timer()
             self.window.update()

@@ -60,7 +60,7 @@ class Debugger:
         right_y += appstate_surf.get_height() * 1.2
 
         # Game state (if in game)
-        if self.state.is_app_state(APPSTATE.IN_GAME):
+        if self.state.is_app_state(APPSTATE.IN_GAME) and self.game is not None:
             #master game state
             game_state_text = f"{self.game.state.get_state()}"
             game_state_surf = self.font_right.render(game_state_text, False, text_color)
@@ -79,14 +79,6 @@ class Debugger:
             self.surface.blit(player_move_intent_state_surf,(right_x - player_move_intent_state_surf.get_width(),right_y))
             right_y += player_move_intent_state_surf.get_height() * 1.2
 
-        # Map editor state (if in editor)
-        if self.state.is_app_state(APPSTATE.MAP_EDITOR):
-            editor_state_text = f"{self.map_editor.state.get_state()}"
-            editor_state_surf = self.font_right.render(editor_state_text, False, text_color)
-            self.surface.blit(editor_state_surf, (right_x - editor_state_surf.get_width(), right_y))
-            right_y += editor_state_surf.get_height() * 1.2
-
-        # Finally, blit the surface
         self.window.blit(self.surface, self.rect)
 
 
